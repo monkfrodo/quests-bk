@@ -5,19 +5,71 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Times de Quest | Blackout Guild</title>
 <style>
-  body{background:#0b1220;color:#e5ecff;font-family:Inter,system-ui,sans-serif;margin:0;padding:30px}
-  h1{text-align:center}
-  form{max-width:500px;margin:0 auto;background:rgba(255,255,255,0.05);padding:20px;border-radius:12px}
-  input,select{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:#10182b;color:#fff;font-size:15px}
-  button{width:100%;padding:12px;margin-top:10px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer}
-  .quests{margin-top:40px;max-width:700px;margin-inline:auto}
-  .quest{background:rgba(255,255,255,0.05);padding:16px;border-radius:12px;margin-bottom:10px}
-  .bar{height:8px;background:#10182b;border-radius:999px;overflow:hidden;margin-top:8px}
-  .fill{height:100%;background:#22c55e}
+  body {
+    background:#0b1220; color:#e5ecff;
+    font-family:Inter,system-ui,sans-serif;
+    margin:0; padding:20px;
+  }
+  h1 { text-align:center; margin-bottom:30px; }
+  form {
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:20px; border-radius:12px;
+    max-width:500px; margin:0 auto 40px;
+  }
+  input, select {
+    width:100%; padding:10px; margin:8px 0;
+    border-radius:8px; border:1px solid rgba(255,255,255,0.1);
+    background:#10182b; color:#fff; font-size:15px;
+  }
+  button {
+    width:100%; padding:12px; margin-top:10px;
+    background:#3b82f6; color:#fff; border:none;
+    border-radius:8px; font-weight:600; cursor:pointer;
+  }
+  .quests { max-width:800px; margin:0 auto; }
+  .quest {
+    background:rgba(255,255,255,0.05);
+    padding:16px; border-radius:12px;
+    margin-bottom:12px; cursor:pointer;
+    transition:.2s;
+  }
+  .quest:hover { background:rgba(255,255,255,0.1); }
+  .header { display:flex; justify-content:space-between; align-items:center; }
+  .bar { height:6px; background:#10182b; border-radius:999px; overflow:hidden; margin-top:6px; }
+  .fill { height:100%; background:#22c55e; transition:width .5s; }
+  .players {
+    display:none; margin-top:10px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    padding-top:8px;
+  }
+  .player { font-size:14px; margin:4px 0; }
+  /* ===== Autocomplete customizado ===== */
+  .autocomplete {
+    position: relative;
+  }
+  .autocomplete-list {
+    position: absolute;
+    background: #10182b;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    width: 100%;
+    z-index: 100;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .autocomplete-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .autocomplete-item:hover {
+    background: rgba(255,255,255,0.1);
+  }
 </style>
 </head>
 <body>
-<h1>Formação de Times de Quest</h1>
+<h1>Times de Quest - Blackout Guild</h1>
 
 <form id="questForm">
   <input type="text" id="nome" placeholder="Seu nome" required>
@@ -26,51 +78,90 @@
     <option>EK</option><option>RP</option><option>MS</option><option>ED</option><option>EM</option>
   </select>
   <input type="number" id="level" placeholder="Level" required>
-  <input type="text" id="quest" placeholder="Nome da Quest" list="listaQuests" required>
-  <datalist id="listaQuests"></datalist>
+
+  <div class="autocomplete">
+    <input type="text" id="quest" placeholder="Nome da Quest" required autocomplete="off">
+    <div id="autocomplete-list" class="autocomplete-list" style="display:none;"></div>
+  </div>
+
   <button type="submit">Registrar interesse</button>
 </form>
 
 <div class="quests" id="quests"></div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbziIHrXBpoNWvDiclUBfNu-YrxfGVJMZ70LOrxWzKlDHAOQxhbYsEtwpT-YoSEBRbss1w/exec"; // <--- substitua
+const API = "https://script.google.com/macros/s/AKfycbziIHrXBpoNWvDiclUBfNu-YrxfGVJMZ70LOrxWzKlDHAOQxhbYsEtwpT-YoSEBRbss1w/exec"; // <-- substitua
+let allQuests = [];
 
 async function loadQuests(){
   const res = await fetch(API);
   const data = await res.json();
   const wrap = document.getElementById('quests');
   wrap.innerHTML = '';
+  allQuests = data.map(q => q.quest); // Atualiza lista global de nomes
+
   data.forEach(q=>{
+    const pct = Math.min(q.count*25,100);
     const div = document.createElement('div');
     div.className='quest';
-    const pct = Math.min(q.count*25,100); // barra simbólica
     div.innerHTML = `
-      <strong>${q.quest}</strong><br>
-      ${q.count} jogador(es) interessado(s)
+      <div class="header">
+        <strong>${q.quest}</strong>
+        <span>${q.count} jogador(es)</span>
+      </div>
       <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="players">
+        ${q.players.map(p=>`
+          <div class="player">• <b>${p.nome}</b> (${p.vocacao}, lvl ${p.level})</div>
+        `).join('')}
+      </div>
     `;
+    div.addEventListener('click',()=>{
+      const pl = div.querySelector('.players');
+      pl.style.display = pl.style.display==='block'?'none':'block';
+    });
     wrap.appendChild(div);
   });
-  // Sugestões no datalist
-  const dl = document.getElementById('listaQuests');
-  dl.innerHTML = data.map(q=>`<option value="${q.quest}">`).join('');
 }
+
+function showAutocomplete(value){
+  const list = document.getElementById('autocomplete-list');
+  list.innerHTML = '';
+  if (!value) { list.style.display = 'none'; return; }
+  const filtered = allQuests.filter(q => q.toLowerCase().includes(value.toLowerCase())).slice(0,10);
+  if (filtered.length === 0) { list.style.display = 'none'; return; }
+  filtered.forEach(q=>{
+    const item = document.createElement('div');
+    item.className = 'autocomplete-item';
+    item.textContent = q;
+    item.onclick = () => {
+      document.getElementById('quest').value = q;
+      list.style.display = 'none';
+    };
+    list.appendChild(item);
+  });
+  list.style.display = 'block';
+}
+
+document.getElementById('quest').addEventListener('input', e => showAutocomplete(e.target.value));
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.autocomplete')) document.getElementById('autocomplete-list').style.display='none';
+});
 
 document.getElementById('questForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const fd = new FormData();
-  fd.append('nome',nome.value);
-  fd.append('vocacao',vocacao.value);
-  fd.append('level',level.value);
-  fd.append('quest',quest.value);
+  fd.append('nome', nome.value);
+  fd.append('vocacao', vocacao.value);
+  fd.append('level', level.value);
+  fd.append('quest', quest.value);
   await fetch(API,{method:'POST',body:fd});
-  alert('Registrado!');
   e.target.reset();
   loadQuests();
 });
 
 loadQuests();
+setInterval(loadQuests, 30000); // Atualiza a cada 30s
 </script>
 </body>
 </html>
