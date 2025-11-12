@@ -3,110 +3,175 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Quest Teams | Blackout Guild</title>
+<title>Diehard | Quest Teams (Wizard)</title>
 
 <link rel="icon" href="https://www.tibiawiki.com.br/images/6/63/Icone7.png" type="image/png">
-<link rel="shortcut icon" href="https://www.tibiawiki.com.br/images/6/63/Icone7.png" type="image/png">
 <link rel="apple-touch-icon" href="https://www.tibiawiki.com.br/images/6/63/Icone7.png">
 
 <style>
   :root{
-    --bg:#0b1220;
-    --card:#0a0f19d9;
-    --border:rgba(255,255,255,.08);
-    --accent:#3b82f6;
-    --muted:#8fa1c2;
+    --bg:#0b0a0d;
+    --overlay:linear-gradient(rgba(15,10,14,.75),rgba(10,7,9,.9));
+    --card:#120f13cc;
+    --border:rgba(255,255,255,.10);
+    --text:#f5eff7;
+    --muted:#c3b9c8;
+    --accent:#8b1e2d;           /* bordô principal */
+    --accent-2:#b42a3e;         /* bordô hover */
     --green:#22c55e;
     --orange:#f59e0b;
     --red:#ef4444;
   }
   *{box-sizing:border-box}
   body{
-    margin:0; min-height:100vh; color:#e5ecff;
+    margin:0; min-height:100vh; color:var(--text);
     font-family:Inter,system-ui,sans-serif;
     background:url('https://preview.redd.it/i-tried-to-make-a-version-of-tibia-8-6-screen-with-more-v0-gcs5d4co5z891.png?width=1080&crop=smart&auto=webp&s=9858d97fff58d708fca33a391d49cd726347ee21') no-repeat center top / cover fixed;
     position:relative;
   }
-  body::before{
-    content:""; position:fixed; inset:0; z-index:0;
-    background:linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.9));
-    pointer-events:none;
-  }
-  .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:60px 16px 40px}
-  header{display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:16px}
-  header img{width:40px; height:auto; opacity:.9}
-  h1{margin:0; font-size:28px; font-weight:800; text-align:center}
-  .subtitle{text-align:center;color:var(--muted);font-size:15px;margin-bottom:26px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 4px 25px rgba(0,0,0,.3);margin-bottom:28px}
-  .form-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));align-items:end}
-  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-  input,select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:#10182b;color:#e5ecff;font-size:15px}
-  .btn{padding:14px 22px;border:none;border-radius:12px;font-weight:700;background:var(--accent);color:#fff;cursor:pointer;transition:.2s}
-  .btn:hover{opacity:.9;transform:translateY(-1px)}
+  body::before{content:""; position:fixed; inset:0; background:var(--overlay); z-index:0; pointer-events:none;}
+  .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:48px 16px 40px}
+  header{display:flex; gap:10px; align-items:center; justify-content:center; margin-bottom:12px}
+  header img{width:40px; height:auto; opacity:.95}
+  h1{margin:0; font-size:28px; font-weight:800; letter-spacing:.2px}
+  .subtitle{text-align:center; color:var(--muted); margin:10px 0 24px}
 
+  /* Wizard */
+  .wizard{background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; box-shadow:0 6px 30px rgba(0,0,0,.35); margin-bottom:22px}
+  .steps{display:flex; gap:8px; justify-content:center; margin-bottom:16px; flex-wrap:wrap}
+  .step-dot{width:10px; height:10px; border-radius:50%; background:#3a2a2e; border:1px solid #5b3a41; opacity:.6}
+  .step-dot.active{background:var(--accent); border-color:var(--accent); opacity:1}
+  .step-dot.done{background:#6d2633; border-color:#6d2633; opacity:.9}
+  .panel{display:none; animation:fade .2s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px}
+  label{font-size:13px; color:var(--muted); display:block; margin-bottom:6px}
+  input,select{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border); background:#161117; color:var(--text); font-size:15px}
+  .btn{padding:14px 22px; border:none; border-radius:12px; font-weight:800; background:var(--accent); color:#fff; cursor:pointer; transition:.2s}
+  .btn:hover{background:var(--accent-2); transform:translateY(-1px)}
+  .btn-ghost{background:transparent; border:1px solid var(--border)}
+  .btn-row{display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap}
+
+  /* Autocomplete */
   .autocomplete{position:relative}
-  .autocomplete-list{position:absolute;top:100%;left:0;right:0;z-index:20;background:#10182b;border:1px solid rgba(255,255,255,.15);border-radius:10px;margin-top:6px;max-height:220px;overflow:auto;display:none}
-  .autocomplete-item{padding:10px 12px;cursor:pointer;font-size:14px}
-  .autocomplete-item:hover{background:rgba(255,255,255,.1)}
+  .ac-list{position:absolute; top:100%; left:0; right:0; z-index:20; background:#161117; border:1px solid var(--border); border-radius:12px; margin-top:6px; max-height:240px; overflow:auto; display:none}
+  .ac-item{padding:10px 12px; cursor:pointer; font-size:14px}
+  .ac-item:hover{background:rgba(255,255,255,.06)}
 
-  .quests{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  .quest{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:16px;padding:16px;transition:.25s;cursor:pointer;position:relative;overflow:hidden}
-  .quest:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
-  .q-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .q-title{font-weight:800;display:flex;align-items:center;gap:8px}
-  .q-title img{width:22px;height:22px;object-fit:contain;vertical-align:middle}
-  .bar{margin-top:10px;height:8px;background:#0b1220;border-radius:999px;overflow:hidden}
-  .fill{height:100%;width:0%;transition:width .5s,background .5s}
-  .players{display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
-  .player{font-size:14px;color:#cfe2ff;margin:4px 0}
-  .muted{color:var(--muted);font-size:13px}
-  .footer{margin-top:34px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid rgba(255,255,255,.1);padding-top:18px}
-  .footer .icon{display:flex;justify-content:center;margin-top:18px}
-  .footer .icon img{width:120px;opacity:.8}
+  /* Quadro de times */
+  .board{background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; box-shadow:0 6px 30px rgba(0,0,0,.35)}
+  .board h3{margin:0 0 12px}
+  .quests{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .quest{background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:16px; padding:14px; transition:.25s; position:relative}
+  .quest:hover{background:rgba(255,255,255,.08)}
+  .q-head{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .q-title{font-weight:800; display:flex; align-items:center; gap:8px}
+  .q-title img{width:22px; height:22px; object-fit:contain}
+  .q-right{display:flex; align-items:center; gap:8px}
+  .q-badge{font-size:12px; padding:4px 10px; border-radius:999px; background:#2a191c; border:1px solid #4a2a30; color:#ffccd6}
+  .bar{margin-top:10px; height:8px; background:#0d0a0c; border-radius:999px; overflow:hidden}
+  .fill{height:100%; width:0%; transition:width .4s ease, background .4s ease}
+  .fill.red{background:var(--red)} .fill.orange{background:var(--orange)} .fill.green{background:var(--green)}
+  .players{display:none; margin-top:10px; border-top:1px solid var(--border); padding-top:10px}
+  .player{font-size:14px; color:#f0dfeb; margin:4px 0}
+
+  /* Agendar */
+  .schedule{display:flex; gap:8px; margin-top:10px}
+  .schedule input{max-width:210px}
+
+  .muted{text-align:center; color:var(--muted); font-size:13px; margin-top:8px}
+  .footer{margin-top:26px; text-align:center; color:var(--muted); font-size:13px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <img src="https://www.tibiawiki.com.br/images/6/63/Icone7.png" alt="Icone">
-    <h1>Quest Teams | Blackout Guild</h1>
-  </header>
-  <div class="subtitle">Monte times para quests. Digite a quest e veja quem já está dentro.</div>
+  <div class="wrap">
+    <header>
+      <img src="https://www.tibiawiki.com.br/images/6/63/Icone7.png" alt="">
+      <h1>Diehard | Quest Teams</h1>
+    </header>
+    <div class="subtitle">Monte o time passo a passo. Bordô da Diehard, simples e direto.</div>
 
-  <div class="card">
-    <form id="form">
-      <div class="form-grid">
-        <div><label>Nome</label><input id="nome" placeholder="Seu nome" required></div>
-        <div><label>Vocação</label>
-          <select id="vocacao" required>
-            <option value="">Selecione</option>
-            <option>EK</option><option>RP</option><option>MS</option><option>ED</option><option>EM</option>
-          </select>
+    <!-- WIZARD -->
+    <div class="wizard">
+      <div class="steps" id="steps"></div>
+
+      <!-- Passo 1 -->
+      <div class="panel active" data-step="1">
+        <div class="grid">
+          <div>
+            <label>Seu nome</label>
+            <input id="nome" placeholder="Ex: Nivek">
+          </div>
+          <div>
+            <label>Vocação</label>
+            <select id="voc">
+              <option value="">Selecione</option>
+              <option>EK</option><option>RP</option><option>MS</option><option>ED</option><option>EM</option>
+            </select>
+          </div>
         </div>
-        <div><label>Level</label><input id="level" type="number" min="1" step="1" placeholder="Ex: 250" required></div>
-        <div class="autocomplete"><label>Quest</label>
-          <input id="quest" placeholder="Digite a quest..." autocomplete="off" required>
-          <div id="acList" class="autocomplete-list"></div>
+        <div class="btn-row">
+          <button class="btn" id="next1">Continuar</button>
         </div>
       </div>
-      <div style="margin-top:14px;display:flex;justify-content:center">
-        <button class="btn" type="submit">Registrar interesse</button>
+
+      <!-- Passo 2 -->
+      <div class="panel" data-step="2">
+        <div class="grid">
+          <div>
+            <label>Level</label>
+            <input id="level" type="number" min="1" step="1" placeholder="Ex: 250">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-ghost" id="back2">Voltar</button>
+          <button class="btn" id="next2">Continuar</button>
+        </div>
       </div>
-    </form>
-    <div id="status" class="muted" style="text-align:center;margin-top:8px"></div>
-  </div>
 
-  <div id="quests" class="quests"></div>
+      <!-- Passo 3 -->
+      <div class="panel" data-step="3">
+        <div class="grid">
+          <div class="autocomplete">
+            <label>Quest</label>
+            <input id="quest" placeholder="Digite a quest..." autocomplete="off">
+            <div id="acList" class="ac-list"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-ghost" id="back3">Voltar</button>
+          <button class="btn" id="finish">Concluir & Registrar</button>
+        </div>
+      </div>
 
-  <div class="footer">
-    <strong>Blackout Guild | Todos os direitos reservados.</strong>
-    <div class="icon"><img src="https://www.tibiawiki.com.br/images/6/63/Icone7.png"></div>
+      <!-- Passo 4 (Confirmação) -->
+      <div class="panel" data-step="4">
+        <div class="muted" id="confirmMsg">Enviando...</div>
+        <div class="btn-row">
+          <button class="btn" id="goBoard">Ver times</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUADRO -->
+    <div class="board">
+      <h3>Times em formação</h3>
+      <div id="status" class="muted">Carregando...</div>
+      <div id="quests" class="quests"></div>
+    </div>
+
+    <div class="footer">
+      <strong>Diehard Guild | Todos os direitos reservados.</strong>
+    </div>
   </div>
-</div>
 
 <script>
+  // ======= CONFIG =======
   const API = "https://script.google.com/macros/s/AKfycbziIHrXBpoNWvDiclUBfNu-YrxfGVJMZ70LOrxWzKlDHAOQxhbYsEtwpT-YoSEBRbss1w/exec";
 
+  // ícones aleatórios pros cards
   const icons = [
     "https://www.tibiawiki.com.br/images/9/96/Icone15.png",
     "https://www.tibiawiki.com.br/images/d/d7/Icone16.png",
@@ -118,77 +183,159 @@
     "https://www.tibiawiki.com.br/images/3/36/Icone13.png"
   ];
 
-  let allQuestNames = [], lastData = [];
-  const $ = s => document.querySelector(s), acList = $('#acList'), statusEl = $('#status');
-
-  function fillColor(count){
-    if (count <= 2) return "var(--red)";
-    if (count <= 4) return "var(--orange)";
-    return "var(--green)";
+  // ======= Wizard base =======
+  const totalSteps = 4;
+  let step = 1;
+  const stepsEl = document.getElementById('steps');
+  function drawSteps(){
+    stepsEl.innerHTML='';
+    for(let i=1;i<=totalSteps;i++){
+      const d=document.createElement('div');
+      d.className='step-dot'+(i===step?' active':(i<step?' done':'')); stepsEl.appendChild(d);
+    }
   }
-  function barWidth(count){return Math.min((count/5)*100,100)+'%'}
+  function showStep(n){
+    step = n;
+    drawSteps();
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', Number(p.dataset.step)===n));
+  }
+  drawSteps();
 
+  document.getElementById('next1').onclick = ()=>{
+    const nome = document.getElementById('nome').value.trim();
+    const voc  = document.getElementById('voc').value.trim();
+    if(!nome || !voc){alert('Preencha nome e vocação.');return;}
+    showStep(2);
+  };
+  document.getElementById('back2').onclick = ()=>showStep(1);
+  document.getElementById('next2').onclick = ()=>{
+    const lvl = document.getElementById('level').value.trim();
+    if(!lvl){alert('Informe seu level.');return;}
+    showStep(3);
+  };
+  document.getElementById('back3').onclick = ()=>showStep(2);
+
+  // ======= Autocomplete quests =======
+  let allQuestNames = [];
+  const acList = document.getElementById('acList');
   function showAutocomplete(term){
     acList.innerHTML=''; term=(term||'').trim().toLowerCase();
     if(!term){acList.style.display='none';return;}
-    const filtered=allQuestNames.filter(q=>q.toLowerCase().includes(term)).slice(0,12);
-    if(!filtered.length){acList.style.display='none';return;}
+    const filtered = allQuestNames.filter(q=>q.toLowerCase().includes(term)).slice(0,12);
+    if(filtered.length===0){acList.style.display='none';return;}
     filtered.forEach(q=>{
       const div=document.createElement('div');
-      div.className='autocomplete-item'; div.textContent=q;
-      div.onclick=()=>{$('#quest').value=q;acList.style.display='none';};
+      div.className='ac-item'; div.textContent=q;
+      div.onclick=()=>{document.getElementById('quest').value=q; acList.style.display='none';};
       acList.appendChild(div);
     });
     acList.style.display='block';
   }
-  $('#quest').addEventListener('input',e=>showAutocomplete(e.target.value));
-  document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete'))acList.style.display='none'});
+  document.getElementById('quest').addEventListener('input',e=>showAutocomplete(e.target.value));
+  document.addEventListener('click',e=>{ if(!e.target.closest('.autocomplete')) acList.style.display='none'; });
 
-  function render(data){
-    const serialized=JSON.stringify(data);
-    if(serialized===JSON.stringify(lastData))return;
-    lastData=data; allQuestNames=data.map(q=>q.quest).filter(Boolean);
-    const wrap=$('#quests'); wrap.innerHTML='';
-    if(!data.length){wrap.innerHTML='<div class="muted" style="grid-column:1/-1;text-align:center">Nenhuma quest registrada ainda.</div>';return;}
-    data.forEach(q=>{
+  // ======= Enviar registro (finish) =======
+  document.getElementById('finish').onclick = async ()=>{
+    const nome = document.getElementById('nome').value.trim();
+    const voc  = document.getElementById('voc').value.trim();
+    const lvl  = document.getElementById('level').value.trim();
+    const quest= document.getElementById('quest').value.trim();
+    if(!nome||!voc||!lvl||!quest){alert('Preencha todos os campos.');return;}
+    showStep(4);
+    document.getElementById('confirmMsg').textContent='Enviando...';
+    try{
+      const fd=new FormData();
+      fd.append('nome',nome); fd.append('vocacao',voc); fd.append('level',lvl); fd.append('quest',quest);
+      await fetch(API,{method:'POST',body:fd,mode:'no-cors'});
+      document.getElementById('confirmMsg').textContent='Registrado! Time atualizado.';
+      setTimeout(fetchBoard, 1200);
+    }catch(e){
+      document.getElementById('confirmMsg').textContent='Falha ao enviar.';
+      console.error(e);
+    }
+  };
+  document.getElementById('goBoard').onclick = ()=>{ showStep(1); window.scrollTo({top:document.querySelector('.board').offsetTop-10,behavior:'smooth'}); };
+
+  // ======= Board (listar times) =======
+  const statusEl = document.getElementById('status');
+  function barColor(count){ if(count<=2) return 'red'; if(count<=4) return 'orange'; return 'green'; }
+  function barWidth(count){ return Math.min((count/5)*100,100) + '%'; }
+
+  function renderBoard(rows){
+    const wrap = document.getElementById('quests');
+    wrap.innerHTML = '';
+    if(!Array.isArray(rows) || rows.length===0){
+      statusEl.textContent='Nenhuma quest ainda.';
+      return;
+    }
+    statusEl.textContent='';
+    allQuestNames = rows.map(x=>x.quest).filter(Boolean);
+
+    rows.forEach(q=>{
       const card=document.createElement('div'); card.className='quest';
       const icon = icons[Math.floor(Math.random()*icons.length)];
-      card.innerHTML=`
+      const scheduledTxt = q.scheduled_at ? `· <span class="q-badge">Agendado: ${q.scheduled_at}</span>` : '';
+      card.innerHTML = `
         <div class="q-head">
           <div class="q-title"><img src="${icon}" alt="">${q.quest}</div>
-          <div class="muted">${q.count} jogador${q.count>1?'es':''}</div>
+          <div class="q-right">
+            <span class="q-badge">${q.count} jogador${q.count>1?'es':''}</span>
+            ${scheduledTxt}
+          </div>
         </div>
-        <div class="bar"><div class="fill" style="width:${barWidth(q.count)};background:${fillColor(q.count)}"></div></div>
+        <div class="bar"><div class="fill ${barColor(q.count)}" style="width:${barWidth(q.count)}"></div></div>
         <div class="players">
-          ${Array.isArray(q.players)&&q.players.length?q.players.map(p=>`<div class="player">• <b>${p.nome||'Sem nome'}</b> (${p.vocacao||'—'}, lvl ${p.level||'—'})</div>`).join(''):'<div class="muted">Ainda sem jogadores listados.</div>'}
-        </div>`;
-      card.addEventListener('click',()=>{const pl=card.querySelector('.players');pl.style.display=pl.style.display==='block'?'none':'block';});
+          ${Array.isArray(q.players) && q.players.length
+            ? q.players.map(p=>`<div class="player">• <b>${p.nome||'—'}</b> (${p.vocacao||'—'}, lvl ${p.level||'—'})</div>`).join('')
+            : '<div class="player" style="opacity:.7">Sem jogadores listados.</div>'
+          }
+          <div class="schedule">
+            <input type="datetime-local" class="when" />
+            <button class="btn" style="padding:10px 14px">Agendar</button>
+          </div>
+        </div>
+      `;
+      // abre/fecha lista
+      card.addEventListener('click', (e)=>{
+        if(e.target.closest('.schedule')) return; // não fechar ao clicar em agendar
+        const p = card.querySelector('.players');
+        p.style.display = p.style.display==='block' ? 'none' : 'block';
+      });
+      // agendar
+      const btn = card.querySelector('.schedule .btn');
+      const when= card.querySelector('.schedule .when');
+      btn.addEventListener('click', async ()=>{
+        const dt = when.value;
+        if(!dt){ alert('Escolha a data/hora do agendamento.'); return; }
+        try{
+          const fd = new FormData();
+          fd.append('action','schedule');
+          fd.append('quest', q.quest);
+          fd.append('when', dt);
+          await fetch(API,{method:'POST',body:fd,mode:'no-cors'});
+          statusEl.textContent='Agendamento registrado. Atualizando...';
+          setTimeout(fetchBoard,1200);
+        }catch(e){
+          alert('Falha ao agendar.'); console.error(e);
+        }
+      });
+
       wrap.appendChild(card);
     });
   }
 
-  async function fetchQuests(){
+  async function fetchBoard(){
     try{
-      statusEl.textContent='Carregando times...';
-      const res=await fetch(API); const data=await res.json();
-      render(Array.isArray(data)?data:[]); statusEl.textContent='';
-    }catch(e){statusEl.textContent='Erro ao carregar.';console.error(e);}
+      statusEl.textContent='Carregando...';
+      const res = await fetch(API);
+      const data = await res.json();       // espera array de quests [{quest,count,players?,scheduled_at?}]
+      renderBoard(Array.isArray(data)?data:[]);
+    }catch(e){
+      statusEl.textContent='Erro ao carregar.'; console.error(e);
+    }
   }
-
-  $('#form').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const nome=$('#nome').value.trim(), voc=$('#vocacao').value.trim(), lvl=$('#level').value.trim(), quest=$('#quest').value.trim();
-    if(!nome||!voc||!lvl||!quest)return;
-    try{
-      statusEl.textContent='Enviando...';
-      const fd=new FormData(); fd.append('nome',nome); fd.append('vocacao',voc); fd.append('level',lvl); fd.append('quest',quest);
-      await fetch(API,{method:'POST',body:fd,mode:'no-cors'});
-      $('#form').reset(); acList.style.display='none'; statusEl.textContent='Registrado!';
-      setTimeout(fetchQuests,1200);
-    }catch(err){statusEl.textContent='Falha ao registrar.';console.error(err);}
-  });
-
-  fetchQuests(); setInterval(fetchQuests,30000);
+  fetchBoard();
+  setInterval(fetchBoard, 30000);
 </script>
 </body>
 </html>
