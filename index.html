@@ -50,10 +50,11 @@
   .autocomplete-item:hover{background:rgba(255,255,255,.1)}
 
   .quests{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  .quest{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:16px;padding:16px;transition:.25s;cursor:pointer}
+  .quest{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:16px;padding:16px;transition:.25s;cursor:pointer;position:relative;overflow:hidden}
   .quest:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
   .q-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .q-title{font-weight:800}
+  .q-title{font-weight:800;display:flex;align-items:center;gap:8px}
+  .q-title img{width:22px;height:22px;object-fit:contain;vertical-align:middle}
   .bar{margin-top:10px;height:8px;background:#0b1220;border-radius:999px;overflow:hidden}
   .fill{height:100%;width:0%;transition:width .5s,background .5s}
   .players{display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
@@ -104,7 +105,18 @@
 </div>
 
 <script>
-  const API = "COLE_AQUI_SEU_APPS_SCRIPT";
+  const API = "https://script.google.com/macros/s/AKfycbziIHrXBpoNWvDiclUBfNu-YrxfGVJMZ70LOrxWzKlDHAOQxhbYsEtwpT-YoSEBRbss1w/exec";
+
+  const icons = [
+    "https://www.tibiawiki.com.br/images/9/96/Icone15.png",
+    "https://www.tibiawiki.com.br/images/d/d7/Icone16.png",
+    "https://www.tibiawiki.com.br/images/6/67/Icone10.png",
+    "https://www.tibiawiki.com.br/images/9/9b/Snowbash.gif",
+    "https://www.tibiawiki.com.br/images/a/a8/Icone2.png",
+    "https://www.tibiawiki.com.br/images/3/37/Icone3.png",
+    "https://www.tibiawiki.com.br/images/6/65/Icone14.png",
+    "https://www.tibiawiki.com.br/images/3/36/Icone13.png"
+  ];
 
   let allQuestNames = [], lastData = [];
   const $ = s => document.querySelector(s), acList = $('#acList'), statusEl = $('#status');
@@ -140,9 +152,12 @@
     if(!data.length){wrap.innerHTML='<div class="muted" style="grid-column:1/-1;text-align:center">Nenhuma quest registrada ainda.</div>';return;}
     data.forEach(q=>{
       const card=document.createElement('div'); card.className='quest';
+      const icon = icons[Math.floor(Math.random()*icons.length)];
       card.innerHTML=`
-        <div class="q-head"><div class="q-title">${q.quest}</div>
-          <div class="muted">${q.count} jogador${q.count>1?'es':''}</div></div>
+        <div class="q-head">
+          <div class="q-title"><img src="${icon}" alt="">${q.quest}</div>
+          <div class="muted">${q.count} jogador${q.count>1?'es':''}</div>
+        </div>
         <div class="bar"><div class="fill" style="width:${barWidth(q.count)};background:${fillColor(q.count)}"></div></div>
         <div class="players">
           ${Array.isArray(q.players)&&q.players.length?q.players.map(p=>`<div class="player">• <b>${p.nome||'Sem nome'}</b> (${p.vocacao||'—'}, lvl ${p.level||'—'})</div>`).join(''):'<div class="muted">Ainda sem jogadores listados.</div>'}
