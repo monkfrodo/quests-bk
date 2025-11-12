@@ -7,84 +7,122 @@
 <link rel="icon" href="https://www.tibiawiki.com.br/images/6/63/Icone7.png">
 <style>
   :root {
-    --bordo:#872b34;
-    --bordo-light:#a64c54;
-    --bg:#0c0a0a;
-    --card:#161112cc;
-    --stroke:#ffffff18;
-    --text:#f5f3f4;
-    --muted:#c8bfc1;
+    --bordo:#832d35;
+    --bordo-light:#9c3b43;
+    --bg:#0b0a0a;
+    --card:#151112e6;
+    --stroke:#ffffff1a;
+    --text:#f3f2f1;
+    --muted:#a9a4a4;
     --green:#22c55e;
     --orange:#f59e0b;
     --red:#ef4444;
     --radius:14px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--text)}
+  html,body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);}
   body::before{
     content:"";position:fixed;inset:0;z-index:-2;
     background:url('https://preview.redd.it/i-tried-to-make-a-version-of-tibia-8-6-screen-with-more-v0-gcs5d4co5z891.png?width=1080&crop=smart&auto=webp&s=9858d97fff58d708fca33a391d49cd726347ee21') center/cover no-repeat;
   }
   body::after{
     content:"";position:fixed;inset:0;z-index:-1;
-    background:linear-gradient(#000000a0,#000000f0 50%,#000 90%);
+    background:linear-gradient(#000000b0,#000000f0 50%,#000 90%);
   }
-  .wrap{max-width:1000px;margin:auto;padding:32px 16px 60px}
-  h1{display:flex;align-items:center;gap:10px;font-size:26px;margin-bottom:8px}
-  h1 img{width:32px;height:32px}
-  p{color:var(--muted);margin-top:0}
+  .wrap{max-width:900px;margin:auto;padding:60px 16px;text-align:center;}
+  h1{display:flex;justify-content:center;align-items:center;gap:10px;font-size:30px;margin-bottom:10px;}
+  h1 img{width:34px;height:34px;}
+  p{color:var(--muted);margin-bottom:40px;}
 
-  .wizard{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:16px;margin-bottom:24px}
-  .step{display:none;animation:fade .3s}
-  .step.active{display:block}
-  @keyframes fade{from{opacity:.5;transform:translateY(5px)}to{opacity:1}}
-  input,select,button{font-size:15px}
-  input,select{width:100%;padding:10px 12px;border:1px solid var(--stroke);border-radius:12px;background:#0f0c0d;color:var(--text)}
-  button{background:var(--bordo-light);border:none;color:#fff;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
-  button:hover{filter:brightness(1.1)}
-  .row{display:flex;gap:10px;margin-top:12px}
-  .voc-menu{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
-  .voc-item{background:#1a1617;border:1px solid var(--stroke);border-radius:10px;padding:8px;text-align:center;cursor:pointer}
-  .voc-item:hover{background:#262021}
+  /* formulário */
+  .form-card{
+    background:var(--card);
+    border:1px solid var(--stroke);
+    border-radius:var(--radius);
+    padding:28px 20px;
+    max-width:420px;
+    margin:auto;
+    text-align:left;
+    box-shadow:0 0 40px rgba(0,0,0,0.4);
+  }
+  label{font-size:14px;color:var(--muted);display:block;margin-bottom:6px;}
+  input,select{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--stroke);
+    background:#0e0b0b;
+    color:var(--text);
+    font-size:15px;
+  }
+  button{
+    background:var(--bordo-light);
+    border:none;
+    border-radius:10px;
+    color:#fff;
+    font-weight:600;
+    font-size:15px;
+    padding:10px 18px;
+    cursor:pointer;
+    transition:.2s;
+  }
+  button:hover{filter:brightness(1.15);}
+  .buttons{display:flex;justify-content:center;margin-top:14px;}
+  .voc-menu{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px;}
+  .voc-item{background:#1b1516;border:1px solid var(--stroke);border-radius:10px;padding:8px;text-align:center;cursor:pointer;}
+  .voc-item.active{outline:2px solid var(--bordo);}
+  .toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);background:#1d1618;border:1px solid var(--stroke);padding:10px 16px;border-radius:10px;opacity:0;transition:.3s;z-index:99;}
+  .toast.show{opacity:1;}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .card{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:14px}
-  .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .title{display:flex;align-items:center;gap:6px;font-weight:700}
-  .bar{height:8px;border-radius:999px;overflow:hidden;margin-bottom:6px;border:1px solid var(--stroke)}
-  .fill{height:100%}
-  .fill.red{background:var(--red)}.fill.orange{background:var(--orange)}.fill.green{background:var(--green)}
-  .plist{margin:0;padding-left:18px;font-size:14px}
-  .sched{display:flex;gap:6px;margin-top:8px}
-  .toast{position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#1b1718;border:1px solid var(--stroke);padding:8px 12px;border-radius:10px;opacity:0;transition:.3s}
-  .toast.show{opacity:1}
+  /* cards de times */
+  .grid{margin-top:60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--stroke);
+    border-radius:var(--radius);
+    padding:18px 16px;
+    text-align:left;
+  }
+  .title{display:flex;align-items:center;gap:6px;font-weight:700;font-size:16px;}
+  .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .bar{height:7px;border-radius:999px;overflow:hidden;margin-bottom:8px;border:1px solid var(--stroke);}
+  .fill{height:100%;}
+  .fill.red{background:var(--red);} .fill.orange{background:var(--orange);} .fill.green{background:var(--green);}
+  ul{padding-left:18px;margin:0;font-size:14px;}
+  .sched{display:flex;gap:8px;margin-top:10px;}
+  small{color:var(--muted);}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1><img src="https://www.tibiawiki.com.br/images/6/63/Icone7.png">Diehard | Quest Teams</h1>
-  <p>Monte seu time por etapas. Vermelho: <2 players • Laranja: 3–4 • Verde: 5+</p>
 
-  <div class="wizard">
-    <div class="step active" id="s1">
+  <div class="form-card" id="form">
+    <div id="step1" class="step">
       <label>Seu nome</label>
       <input id="nome" placeholder="Ex: Monk Frodo">
-      <div class="row"><button id="next1" disabled>Continuar</button></div>
+      <div class="buttons"><button id="btnNext1" disabled>Continuar</button></div>
     </div>
 
-    <div class="step" id="s2">
+    <div id="step2" class="step" style="display:none">
       <label>Vocação</label>
       <div class="voc-menu" id="vocs"></div>
-      <label style="margin-top:10px">Level</label>
+      <label style="margin-top:10px;">Level</label>
       <input id="level" type="number" min="1" placeholder="Ex: 300">
-      <div class="row"><button id="back2">Voltar</button><button id="next2" disabled>Continuar</button></div>
+      <div class="buttons">
+        <button id="back2">Voltar</button>
+        <button id="next2" disabled>Continuar</button>
+      </div>
     </div>
 
-    <div class="step" id="s3">
+    <div id="step3" class="step" style="display:none">
       <label>Quest</label>
       <input id="quest" placeholder="Ex: Warzone 4" list="qlist">
       <datalist id="qlist"></datalist>
-      <div class="row"><button id="back3">Voltar</button><button id="final" disabled>Entrar no time</button></div>
+      <div class="buttons">
+        <button id="back3">Voltar</button>
+        <button id="finish" disabled>Entrar no time</button>
+      </div>
     </div>
   </div>
 
@@ -106,59 +144,54 @@ const icons=[
   "https://www.tibiawiki.com.br/images/3/36/Icone13.png"
 ];
 let user={nome:"",voc:"",level:"",quest:""};
+function $(s){return document.querySelector(s);}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500);}
 
-function $(s){return document.querySelector(s)}
-function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1500)}
-
-$("#nome").oninput=e=>{$("#next1").disabled=!e.target.value.trim()}
-$("#next1").onclick=()=>{user.nome=$("#nome").value.trim();next(2)}
-$("#back2").onclick=()=>next(1)
-$("#back3").onclick=()=>next(2)
-$("#level").oninput=()=>validate2()
-$("#quest").oninput=e=>{$("#final").disabled=!e.target.value.trim()}
-
-$("#next2").onclick=()=>{user.level=$("#level").value.trim();next(3)}
-$("#final").onclick=async()=>{
+$("#nome").oninput=e=>$("#btnNext1").disabled=!e.target.value.trim();
+$("#btnNext1").onclick=()=>{user.nome=$("#nome").value.trim();goto(2);}
+$("#back2").onclick=()=>goto(1);
+$("#back3").onclick=()=>goto(2);
+$("#level").oninput=()=>$("#next2").disabled=!($("#level").value.trim()&&user.voc);
+$("#next2").onclick=()=>{user.level=$("#level").value.trim();goto(3);}
+$("#quest").oninput=e=>$("#finish").disabled=!e.target.value.trim();
+$("#finish").onclick=async()=>{
   user.quest=$("#quest").value.trim();
   await fetch(API_URL,{method:"POST",body:new URLSearchParams(user)});
-  toast("Time atualizado."); await load(); next(1);
-}
+  toast("Time atualizado!");await load();goto(1);
+};
 
-function next(n){[1,2,3].forEach(i=>$("#s"+i).classList.toggle("active",i===n))}
-function validate2(){$("#next2").disabled=!(user.voc&&$("#level").value.trim())}
-
-// vocação grid
+function goto(n){[1,2,3].forEach(i=>$("#step"+i).style.display=i===n?"block":"none");}
 const vmenu=$("#vocs");
 vocs.forEach(v=>{
-  const b=document.createElement("div");
-  b.className="voc-item";b.textContent=v;
-  b.onclick=()=>{user.voc=v;validate2();[...vmenu.children].forEach(c=>c.style.outline="none");b.style.outline="2px solid var(--bordo)"}
-  vmenu.appendChild(b);
+  const d=document.createElement("div");
+  d.className="voc-item";d.textContent=v;
+  d.onclick=()=>{user.voc=v;$("#next2").disabled=!$("#level").value.trim();[...vmenu.children].forEach(c=>c.classList.remove("active"));d.classList.add("active");};
+  vmenu.appendChild(d);
 });
 
-// render list
 async function load(){
   try{
-    const r=await fetch(API_URL); const data=await r.json();
+    const r=await fetch(API_URL);const data=await r.json();
     render(data);
-    const dl=$("#qlist"); dl.innerHTML="";
+    const dl=$("#qlist");dl.innerHTML="";
     [...new Set(data.map(i=>i.quest))].forEach(q=>{
-      const o=document.createElement("option");o.value=q;dl.appendChild(o)
+      const o=document.createElement("option");o.value=q;dl.appendChild(o);
     });
-  }catch{render([])}
+  }catch{render([]);}
 }
 
 function render(items){
-  const g=$("#grid"); g.innerHTML="";
+  const g=$("#grid");g.innerHTML="";
   items.sort((a,b)=>b.count-a.count);
   items.forEach((it,i)=>{
     const bar=it.count>=5?"green":it.count>=3?"orange":"red";
     const icon=icons[i%icons.length];
-    const c=document.createElement("div");c.className="card";
+    const c=document.createElement("div");
+    c.className="card";
     c.innerHTML=`
       <div class="head"><div class="title"><img src="${icon}" width="18"> ${it.quest}</div><span>${it.count} ${it.count==1?"jogador":"jogadores"}</span></div>
       <div class="bar"><div class="fill ${bar}" style="width:${Math.min(100,(it.count/5)*100)}%"></div></div>
-      <ul class="plist">${it.players.map(p=>`<li>${p.nome} (${p.vocacao}, lvl ${p.level})</li>`).join("")}</ul>
+      <ul>${it.players.map(p=>`<li>${p.nome} (${p.vocacao}, lvl ${p.level})</li>`).join("")}</ul>
       <div class="sched"><input type="datetime-local" class="dt"><button class="btn">Agendar</button></div>
       ${it.scheduled_at?`<small>Agendado: ${it.scheduled_at}</small>`:""}
     `;
@@ -166,12 +199,11 @@ function render(items){
       const dt=c.querySelector(".dt").value;
       if(!dt)return toast("Escolha data/hora");
       await fetch(API_URL,{method:"POST",body:new URLSearchParams({action:"schedule",quest:it.quest,when:new Date(dt).toISOString(),nome:user.nome||"Anônimo"})});
-      toast("Agendado!"); load();
+      toast("Agendado!");load();
     };
     g.appendChild(c);
   });
 }
-
 load();
 </script>
 </body>
